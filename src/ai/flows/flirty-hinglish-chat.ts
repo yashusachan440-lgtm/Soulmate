@@ -47,7 +47,7 @@ const flirtyHinglishChatFlow = ai.defineFlow(
     inputSchema: FlirtyHinglishChatInputSchema,
     outputSchema: FlirtyHinglishChatOutputSchema,
   },
-  async input => {
+  async (input) => {
     const {output} = await prompt(input);
     return output!;
   }
