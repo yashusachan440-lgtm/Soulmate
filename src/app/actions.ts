@@ -2,10 +2,19 @@
 "use server";
 
 import { flirtyHinglishChat } from "@/ai/flows/flirty-hinglish-chat";
-import type { FlirtyHinglishChatInput } from "@/ai/types/flirty-hinglish-chat";
+import type { FlirtyHinglishChatInput, UserGender } from "@/ai/types/flirty-hinglish-chat";
 
-export async function getAiResponse(input: FlirtyHinglishChatInput): Promise<string> {
+interface GetAiResponseParams {
+  message: string;
+  userGender: UserGender;
+}
+
+export async function getAiResponse(params: GetAiResponseParams): Promise<string> {
   try {
+    const input: FlirtyHinglishChatInput = {
+      ...params,
+      isMale: params.userGender === 'male',
+    };
     const output = await flirtyHinglishChat(input);
     return output.response;
   } catch (error) {

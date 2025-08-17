@@ -13,6 +13,7 @@ export type UserGender = z.infer<typeof UserGenderSchema>;
 export const FlirtyHinglishChatInputSchema = z.object({
   message: z.string().describe('The user message to respond to.'),
   userGender: UserGenderSchema.describe("The user's selected gender."),
+  isMale: z.boolean().describe('Whether the user is male.'),
 });
 export type FlirtyHinglishChatInput = z.infer<typeof FlirtyHinglishChatInputSchema>;
 
