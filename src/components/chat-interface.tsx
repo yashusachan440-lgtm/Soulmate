@@ -17,7 +17,7 @@ import { getAiResponse } from "@/app/actions";
 import { cn } from "@/lib/utils";
 
 interface Message {
-  id: number;
+  id: string;
   role: "user" | "bot";
   text: string;
   isTyping?: boolean;
@@ -28,13 +28,12 @@ const formSchema = z.object({
 });
 type FormValues = z.infer<typeof formSchema>;
 
-let messageIdCounter = 0;
-
 export function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showHearts, setShowHearts] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messageIdCounterRef = useRef(0);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -44,28 +43,36 @@ export function ChatInterface() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+  
+  const getNewMessageId = () => {
+    const newId = messageIdCounterRef.current;
+    messageIdCounterRef.current += 1;
+    return `msg-${newId}`;
+  };
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     if (isLoading) return;
     const userInput = data.message;
-
-    const userMessage: Message = { id: messageIdCounter++, role: "user", text: userInput };
-    setMessages((prev) => [...prev, userMessage, { id: messageIdCounter++, role: "bot", text: "", isTyping: true }]);
     form.reset();
+
+    const userMessage: Message = { id: getNewMessageId(), role: "user", text: userInput };
+    const typingMessage: Message = {  id: getNewMessageId(), role: "bot", text: "", isTyping: true };
+    
+    setMessages((prev) => [...prev, userMessage, typingMessage]);
     setIsLoading(true);
 
     try {
       const botResponse = await getAiResponse({ message: userInput });
       
-      const botMessage: Message = { id: messageIdCounter++, role: "bot", text: botResponse };
+      const botMessage: Message = { id: getNewMessageId(), role: "bot", text: botResponse };
 
-      setMessages((prev) => [...prev.filter((m) => !m.isTyping), botMessage]);
+      setMessages((prev) => [...prev.slice(0, -1), botMessage]);
 
       setShowHearts(true);
       setTimeout(() => setShowHearts(false), 4000);
     } catch (error) {
-       const errorMessage: Message = { id: messageIdCounter++, role: "bot", text: "Oh no, my heart skipped a beat... and my circuits too. Try again? 😘" };
-      setMessages((prev) => [...prev.filter((m) => !m.isTyping), errorMessage]);
+       const errorMessage: Message = { id: getNewMessageId(), role: "bot", text: "Oh no, my heart skipped a beat... and my circuits too. Try again? 😘" };
+      setMessages((prev) => [...prev.slice(0, -1), errorMessage]);
     } finally {
       setIsLoading(false);
     }
