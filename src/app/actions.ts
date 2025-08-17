@@ -7,6 +7,7 @@ import type { FlirtyHinglishChatInput, UserGender } from "@/ai/types/flirty-hing
 interface GetAiResponseParams {
   message: string;
   userGender: UserGender;
+  chatbotName: string;
 }
 
 export async function getAiResponse(params: GetAiResponseParams): Promise<string> {

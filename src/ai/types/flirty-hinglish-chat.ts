@@ -14,6 +14,7 @@ export const FlirtyHinglishChatInputSchema = z.object({
   message: z.string().describe('The user message to respond to.'),
   userGender: UserGenderSchema.describe("The user's selected gender."),
   isMale: z.boolean().describe('Whether the user is male.'),
+  chatbotName: z.string().describe("The chatbot's current name."),
 });
 export type FlirtyHinglishChatInput = z.infer<typeof FlirtyHinglishChatInputSchema>;
 

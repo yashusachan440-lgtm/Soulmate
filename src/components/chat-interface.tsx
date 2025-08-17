@@ -136,7 +136,7 @@ export function ChatInterface() {
 
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    if (isLoading || !userGender) return;
+    if (isLoading || !userGender || !chatbotPersona) return;
     const userInput = data.message;
     form.reset();
 
@@ -158,7 +158,11 @@ export function ChatInterface() {
     setMessages((prev) => [...prev, typingMessage]);
 
     try {
-      const botResponse = await getAiResponse({ message: userInput, userGender });
+      const botResponse = await getAiResponse({ 
+        message: userInput, 
+        userGender,
+        chatbotName: chatbotPersona.name,
+      });
 
       const botMessage: Message = {
         id: getNewMessageId(),
@@ -390,5 +394,3 @@ export function ChatInterface() {
     </>
   );
 }
-
-    
