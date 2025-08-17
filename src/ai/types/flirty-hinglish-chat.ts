@@ -7,7 +7,7 @@
 
 import {z} from 'genkit';
 
-export const UserGenderSchema = z.enum(['male', 'female', 'other']);
+export const UserGenderSchema = z.enum(['male', 'female']);
 export type UserGender = z.infer<typeof UserGenderSchema>;
 
 export const FlirtyHinglishChatInputSchema = z.object({

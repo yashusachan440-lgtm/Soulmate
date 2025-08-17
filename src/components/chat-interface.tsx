@@ -56,7 +56,7 @@ export function ChatInterface() {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const getNewMessageId = (): string => `msg_${Date.now()}_${Math.random()}`;
+  const getNewMessageId = useCallback((): string => `msg_${Date.now()}_${Math.random()}`,[]);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -79,7 +79,20 @@ export function ChatInterface() {
     }
   }, [isEditingName]);
 
-  const handleGenderSelect = (gender: UserGender) => {
+  const getPersona = useCallback((gender: UserGender | null) => {
+    if (gender === 'male') {
+      return { 
+        name: 'Vanika', 
+        initialMessage: "Hey there, handsome. Ready to play? I've been waiting for you... 😉" 
+      };
+    }
+    return { 
+      name: 'Veer', 
+      initialMessage: "Hey beautiful, you finally made it. I was just thinking about you... 😏"
+    };
+  }, []);
+
+  const handleGenderSelect = useCallback((gender: UserGender) => {
     setUserGender(gender);
     setIsGenderModalOpen(false);
 
@@ -93,20 +106,7 @@ export function ChatInterface() {
         text: initialMessage,
       },
     ]);
-  };
-
-  const getPersona = (gender: UserGender | null) => {
-    if (gender === 'male') {
-      return { 
-        name: 'Vanika', 
-        initialMessage: "Hey there, handsome. Ready to play? I've been waiting for you... 😉" 
-      };
-    }
-    return { 
-      name: 'Veer', 
-      initialMessage: "Hey beautiful, you finally made it. I was just thinking about you... 😏"
-    };
-  };
+  }, [getNewMessageId, getPersona]);
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     if (isLoading || !userGender) return;
@@ -142,7 +142,9 @@ export function ChatInterface() {
 
       setMessages((prev) => {
         // Replace the typing indicator with the actual bot message
-        return prev.slice(0, -1).concat(botMessage);
+        const newMessages = prev.slice(0, -1);
+        newMessages.push(botMessage);
+        return newMessages;
       });
 
       setShowHearts(true);
@@ -155,7 +157,9 @@ export function ChatInterface() {
       };
       setMessages((prev) => {
          // Replace the typing indicator with the error message
-        return prev.slice(0, -1).concat(errorMessage);
+        const newMessages = prev.slice(0, -1);
+        newMessages.push(errorMessage);
+        return newMessages;
       });
     } finally {
       setIsLoading(false);
@@ -198,14 +202,6 @@ export function ChatInterface() {
             >
               <Venus className="h-8 w-8 text-pink-500" />
               <span className="text-lg font-bold text-pink-600">Female</span>
-            </Button>
-             <Button
-              variant="outline"
-              className="flex flex-col h-24 w-24 rounded-full border-4 border-purple-400 hover:bg-purple-100"
-              onClick={() => handleGenderSelect('other')}
-            >
-              <Gem className="h-8 w-8 text-purple-500" />
-              <span className="text-lg font-bold text-purple-600">Other</span>
             </Button>
           </div>
         </DialogContent>
