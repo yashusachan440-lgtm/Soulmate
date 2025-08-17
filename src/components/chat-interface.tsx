@@ -60,6 +60,7 @@ export function ChatInterface() {
   const nameInputRef = useRef<HTMLInputElement>(null);
   const [userGender, setUserGender] = useState<UserGender | null>(null);
   const [isGenderModalOpen, setIsGenderModalOpen] = useState(true);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -116,6 +117,23 @@ export function ChatInterface() {
       },
     ]);
   }, [getPersona]);
+
+  const handleAvatarUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && chatbotPersona) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const newAvatarUrl = e.target?.result as string;
+        setChatbotPersona({ ...chatbotPersona, avatarUrl: newAvatarUrl });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     if (isLoading || !userGender) return;
@@ -219,6 +237,14 @@ export function ChatInterface() {
           </div>
         </DialogContent>
       </Dialog>
+      
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleAvatarChange}
+        className="hidden"
+        accept="image/*"
+      />
 
       <div className="flex h-screen w-full items-center justify-center bg-gradient-to-br from-pink-100 via-rose-100 to-violet-200 dark:from-gray-900 dark:via-purple-900/30 dark:to-gray-900 p-4">
         <Card className="w-full max-w-2xl h-[95vh] flex flex-col shadow-2xl rounded-3xl relative overflow-hidden border-primary/20 bg-card/80 dark:bg-card/60 backdrop-blur-xl">
@@ -226,7 +252,11 @@ export function ChatInterface() {
           <CardHeader className="text-center border-b relative group flex-shrink-0 bg-card/50 backdrop-blur-sm">
             <div className="flex items-center justify-center gap-3">
               {chatbotPersona?.avatarUrl && (
-                <Avatar className="w-10 h-10 border-2 border-primary/50">
+                <Avatar 
+                  className="w-10 h-10 border-2 border-primary/50 cursor-pointer"
+                  onClick={handleAvatarUploadClick}
+                  title="Click to change avatar"
+                >
                   <AvatarImage 
                     src={chatbotPersona.avatarUrl} 
                     alt={chatbotPersona.name}
@@ -360,3 +390,5 @@ export function ChatInterface() {
     </>
   );
 }
+
+    
