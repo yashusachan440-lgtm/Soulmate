@@ -3,8 +3,8 @@ import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Ishq Chat",
-  description: "A flirty Hinglish chatbot experience",
+  title: "Vanika",
+  description: "Your flirty AI companion",
 };
 
 export default function RootLayout({

@@ -1,11 +1,11 @@
-# Ishq Chat - Your Flirty AI Companion
+# Vanika - Your Flirty AI Companion
 
-Welcome to Ishq Chat, a delightful and playful chatbot experience where you can engage in flirtatious Hinglish conversations with a charming AI.
+Welcome to Vanika, a delightful and playful chatbot experience where you can engage in flirtatious Hinglish conversations with a charming AI.
 
 This project is built with Next.js and Firebase Genkit, showcasing how to create engaging, AI-powered applications.
 
-![Ishq Chat Screenshot](https://placehold.co/800x600.png?text=Ishq+Chat+UI)
-*A sneak peek of the Ishq Chat interface.*
+![Vanika Screenshot](https://placehold.co/800x600.png?text=Vanika+UI)
+*A sneak peek of the Vanika interface.*
 
 ## ✨ Features
 
@@ -25,7 +25,7 @@ This project is built with Next.js and Firebase Genkit, showcasing how to create
 
 ## 🛠️ Getting Started
 
-Follow these steps to get the Ishq Chat application running on your local machine.
+Follow these steps to get the Vanika application running on your local machine.
 
 ### Prerequisites
 
