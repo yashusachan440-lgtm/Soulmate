@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { SendHorizonal, Heart, User } from "lucide-react";
+import { SendHorizonal, Heart, User, Pencil } from "lucide-react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -24,7 +24,7 @@ import { getAiResponse } from "@/app/actions";
 import { cn } from "@/lib/utils";
 
 interface Message {
-  id: number;
+  id: string;
   role: "user" | "bot";
   text: string;
   isTyping?: boolean;
@@ -40,13 +40,14 @@ export function ChatInterface() {
   const [isLoading, setIsLoading] = useState(false);
   const [showHearts, setShowHearts] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [chatbotName, setChatbotName] = useState("Vanika");
+  const [isEditingName, setIsEditingName] = useState(false);
+  const nameInputRef = useRef<HTMLInputElement>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const messageIdCounterRef = useRef(0);
 
   const getNewMessageId = useCallback(() => {
-    messageIdCounterRef.current += 1;
-    return messageIdCounterRef.current;
+    return Math.random().toString(36).substring(2, 9);
   }, []);
 
   const form = useForm<FormValues>({
@@ -71,6 +72,12 @@ export function ChatInterface() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  useEffect(() => {
+    if (isEditingName) {
+      nameInputRef.current?.focus();
+    }
+  }, [isEditingName]);
   
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     if (isLoading) return;
@@ -139,14 +146,36 @@ export function ChatInterface() {
     return null;
   }
 
+  const handleNameKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      setIsEditingName(false);
+    }
+  };
+
   return (
     <div className="flex h-screen w-full items-center justify-center bg-gradient-to-br from-background via-secondary to-background p-4">
       <Card className="w-full max-w-2xl h-[95vh] flex flex-col shadow-2xl rounded-3xl relative overflow-hidden border-primary/20">
         {showHearts && <FloatingHearts />}
-        <CardHeader className="text-center border-b">
-          <CardTitle className="font-headline text-4xl text-primary tracking-wider">
-            Vanika
-          </CardTitle>
+        <CardHeader className="text-center border-b relative group">
+          {isEditingName ? (
+            <Input
+              ref={nameInputRef}
+              value={chatbotName}
+              onChange={(e) => setChatbotName(e.target.value)}
+              onBlur={() => setIsEditingName(false)}
+              onKeyDown={handleNameKeyDown}
+              className="font-headline text-4xl text-primary tracking-wider text-center bg-transparent border-primary/50"
+              maxLength={20}
+            />
+          ) : (
+            <CardTitle 
+              className="font-headline text-4xl text-primary tracking-wider"
+              onClick={() => setIsEditingName(true)}
+            >
+              {chatbotName}
+              <Pencil className="w-5 h-5 absolute top-1/2 right-4 -translate-y-1/2 text-primary/30 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer" />
+            </CardTitle>
+          )}
           <CardDescription className="font-body text-base">
             Your flirty AI companion... if you can keep up 😉
           </CardDescription>
