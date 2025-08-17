@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useRef, useEffect } from "react";
@@ -28,17 +29,26 @@ const formSchema = z.object({
 });
 type FormValues = z.infer<typeof formSchema>;
 
+const initialMessages: Message[] = [
+  {
+    id: 'msg-0',
+    role: 'bot',
+    text: "Hey there, handsome. Ready to play? I've been waiting for you... 😉",
+  },
+];
+
 export function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([]);
+  const [isMounted, setIsMounted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showHearts, setShowHearts] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const messageIdCounterRef = useRef(0);
+  const messageIdCounterRef = useRef(1);
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: { message: "" },
-  });
+  useEffect(() => {
+    setIsMounted(true);
+    setMessages(initialMessages);
+  }, []);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -77,6 +87,10 @@ export function ChatInterface() {
       setIsLoading(false);
     }
   };
+
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <div className="flex h-screen w-full items-center justify-center bg-gradient-to-br from-background via-secondary to-background p-4">
