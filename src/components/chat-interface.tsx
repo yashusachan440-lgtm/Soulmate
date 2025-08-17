@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { SendHorizonal, Heart, User, Pencil, Venus, Mars } from "lucide-react";
+import { SendHorizonal, Heart, User, Pencil, Venus, Mars, Sparkles } from "lucide-react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -131,7 +131,7 @@ export function ChatInterface() {
     setMessages((prev) => [...prev, typingMessage]);
 
     try {
-      const botResponse = await getAiResponse({ message: userInput, userGender: userGender });
+      const botResponse = await getAiResponse({ message: userInput, userGender: userGender, isMale: userGender === 'male' });
 
       const botMessage: Message = {
         id: getNewMessageId(),
@@ -187,75 +187,78 @@ export function ChatInterface() {
           <div className="flex justify-around pt-4">
             <Button
               variant="outline"
-              className="flex flex-col h-24 w-24 rounded-full border-4 border-blue-400 hover:bg-blue-100"
+              className="flex flex-col h-24 w-24 rounded-full border-4 border-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50"
               onClick={() => handleGenderSelect('male')}
             >
               <Mars className="h-8 w-8 text-blue-500" />
-              <span className="text-lg font-bold text-blue-600">Male</span>
+              <span className="text-lg font-bold text-blue-600 dark:text-blue-400">Male</span>
             </Button>
             <Button
               variant="outline"
-              className="flex flex-col h-24 w-24 rounded-full border-4 border-pink-400 hover:bg-pink-100"
+              className="flex flex-col h-24 w-24 rounded-full border-4 border-pink-400 hover:bg-pink-100 dark:hover:bg-pink-900/50"
               onClick={() => handleGenderSelect('female')}
             >
               <Venus className="h-8 w-8 text-pink-500" />
-              <span className="text-lg font-bold text-pink-600">Female</span>
+              <span className="text-lg font-bold text-pink-600 dark:text-pink-400">Female</span>
             </Button>
           </div>
         </DialogContent>
       </Dialog>
 
-      <div className="flex h-screen w-full items-center justify-center bg-gradient-to-br from-background via-secondary to-background p-4">
-        <Card className="w-full max-w-2xl h-[95vh] flex flex-col shadow-2xl rounded-3xl relative overflow-hidden border-primary/20">
+      <div className="flex h-screen w-full items-center justify-center bg-gradient-to-br from-pink-100 via-rose-100 to-violet-200 dark:from-gray-900 dark:via-purple-900/30 dark:to-gray-900 p-4">
+        <Card className="w-full max-w-2xl h-[95vh] flex flex-col shadow-2xl rounded-3xl relative overflow-hidden border-primary/20 bg-card/80 dark:bg-card/60 backdrop-blur-xl">
           {showHearts && <FloatingHearts />}
-          <CardHeader className="text-center border-b relative group flex-shrink-0">
-            {isEditingName ? (
-              <Input
-                ref={nameInputRef}
-                value={chatbotName}
-                onChange={(e) => setChatbotName(e.target.value)}
-                onBlur={() => setIsEditingName(false)}
-                onKeyDown={handleNameKeyDown}
-                className="font-headline text-4xl text-primary tracking-wider text-center bg-transparent border-primary/50"
-                maxLength={20}
-              />
-            ) : (
-              <CardTitle 
-                className="font-headline text-4xl text-primary tracking-wider cursor-pointer"
-                onClick={() => setIsEditingName(true)}
-              >
-                {chatbotName}
-                <Pencil className="w-5 h-5 absolute top-1/2 right-4 -translate-y-1/2 text-primary/30 opacity-0 group-hover:opacity-100 transition-opacity" />
-              </CardTitle>
-            )}
+          <CardHeader className="text-center border-b relative group flex-shrink-0 bg-card/50 backdrop-blur-sm">
+            <div className="flex items-center justify-center gap-2">
+              <Sparkles className="w-7 h-7 text-primary/70" />
+              {isEditingName ? (
+                <Input
+                  ref={nameInputRef}
+                  value={chatbotName}
+                  onChange={(e) => setChatbotName(e.target.value)}
+                  onBlur={() => setIsEditingName(false)}
+                  onKeyDown={handleNameKeyDown}
+                  className="font-headline text-4xl text-primary tracking-wider text-center bg-transparent border-primary/50"
+                  maxLength={20}
+                />
+              ) : (
+                <CardTitle 
+                  className="font-headline text-4xl text-primary tracking-wider cursor-pointer"
+                  onClick={() => setIsEditingName(true)}
+                >
+                  {chatbotName}
+                  <Pencil className="w-5 h-5 absolute top-1/2 right-4 -translate-y-1/2 text-primary/30 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </CardTitle>
+              )}
+            </div>
             <CardDescription className="font-body text-base">
               Your flirty AI companion... if you can keep up 😉
             </CardDescription>
           </CardHeader>
           <CardContent className="flex-grow flex flex-col p-0 overflow-hidden">
             <ScrollArea className="flex-grow p-4 md:p-6">
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {messages.map((message) => (
                   <div
                     key={message.id}
                     className={cn(
-                      "flex items-end gap-3",
+                      "flex items-end gap-2.5",
                       message.role === "user" ? "justify-end" : "justify-start"
                     )}
                   >
                     {message.role === "bot" && (
-                      <Avatar className="w-10 h-10 border-2 border-primary/50">
+                      <Avatar className="w-9 h-9 border-2 border-primary/50">
                         <AvatarFallback className="bg-primary text-primary-foreground">
-                          <Heart className="w-5 h-5" />
+                          <Heart className="w-4 h-4" />
                         </AvatarFallback>
                       </Avatar>
                     )}
                     <div
                       className={cn(
-                        "max-w-xs md:max-w-md rounded-2xl p-3 px-4",
+                        "max-w-xs md:max-w-md rounded-2xl p-3 px-4 shadow-md",
                         message.role === "user"
-                          ? "bg-primary text-primary-foreground rounded-br-none"
-                          : "bg-card text-card-foreground rounded-bl-none border"
+                          ? "bg-primary text-primary-foreground rounded-br-lg"
+                          : "bg-card text-card-foreground rounded-bl-lg border"
                       )}
                     >
                       {message.isTyping ? (
@@ -271,9 +274,9 @@ export function ChatInterface() {
                       )}
                     </div>
                     {message.role === "user" && (
-                      <Avatar className="w-10 h-10 border-2 border-muted">
+                      <Avatar className="w-9 h-9 border-2 border-muted">
                         <AvatarFallback className="bg-muted text-muted-foreground">
-                          <User className="w-5 h-5" />
+                          <User className="w-4 h-4" />
                         </AvatarFallback>
                       </Avatar>
                     )}
@@ -282,7 +285,7 @@ export function ChatInterface() {
                 <div ref={messagesEndRef} />
               </div>
             </ScrollArea>
-            <div className="p-4 border-t bg-background/50 flex-shrink-0">
+            <div className="p-4 border-t bg-card/50 backdrop-blur-sm flex-shrink-0">
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
@@ -297,7 +300,7 @@ export function ChatInterface() {
                           <Input
                             {...field}
                             placeholder="Message your dilbar..."
-                            className="flex-grow text-base h-12 rounded-full px-5"
+                            className="flex-grow text-base h-12 rounded-full px-5 bg-background/70 focus:bg-background"
                             disabled={isLoading || !userGender}
                             autoComplete="off"
                             aria-label="Your message"
@@ -309,7 +312,7 @@ export function ChatInterface() {
                   <Button
                     type="submit"
                     size="icon"
-                    className="rounded-full w-12 h-12"
+                    className="rounded-full w-12 h-12 flex-shrink-0"
                     disabled={isLoading || !userGender}
                     aria-label="Send message"
                   >
