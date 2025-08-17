@@ -2,7 +2,8 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { SendHorizonal, Heart, User, Pencil, Venus, Mars, Sparkles } from "lucide-react";
+import Image from "next/image";
+import { SendHorizonal, User, Pencil, Venus, Mars, Sparkles } from "lucide-react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -17,7 +18,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import {
   Dialog,
@@ -43,12 +44,18 @@ const formSchema = z.object({
 });
 type FormValues = z.infer<typeof formSchema>;
 
+interface Persona {
+  name: string;
+  initialMessage: string;
+  avatarUrl: string;
+}
+
 export function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showHearts, setShowHearts] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const [chatbotName, setChatbotName] = useState("Vanika");
+  const [chatbotPersona, setChatbotPersona] = useState<Persona | null>(null);
   const [isEditingName, setIsEditingName] = useState(false);
   const nameInputRef = useRef<HTMLInputElement>(null);
   const [userGender, setUserGender] = useState<UserGender | null>(null);
@@ -79,16 +86,18 @@ export function ChatInterface() {
     }
   }, [isEditingName]);
 
-  const getPersona = useCallback((gender: UserGender | null) => {
+  const getPersona = useCallback((gender: UserGender | null): Persona => {
     if (gender === 'male') {
       return { 
         name: 'Vanika', 
-        initialMessage: "Hey there, handsome. Ready to play? I've been waiting for you... 😉" 
+        initialMessage: "Hey there, handsome. Ready to play? I've been waiting for you... 😉",
+        avatarUrl: "https://placehold.co/128x128.png",
       };
     }
     return { 
       name: 'Veer', 
-      initialMessage: "Hey beautiful, you finally made it. I was just thinking about you... 😏"
+      initialMessage: "Hey beautiful, you finally made it. I was just thinking about you... 😏",
+      avatarUrl: "https://placehold.co/128x128.png", // Placeholder for Veer
     };
   }, []);
 
@@ -96,14 +105,14 @@ export function ChatInterface() {
     setUserGender(gender);
     setIsGenderModalOpen(false);
 
-    const { name, initialMessage } = getPersona(gender);
-    setChatbotName(name);
+    const persona = getPersona(gender);
+    setChatbotPersona(persona);
 
     setMessages([
       {
         id: getNewMessageId(),
         role: "bot",
-        text: initialMessage,
+        text: persona.initialMessage,
       },
     ]);
   }, [getPersona]);
@@ -131,7 +140,7 @@ export function ChatInterface() {
     setMessages((prev) => [...prev, typingMessage]);
 
     try {
-      const botResponse = await getAiResponse({ message: userInput, userGender: userGender, isMale: userGender === 'male' });
+      const botResponse = await getAiResponse({ message: userInput, userGender });
 
       const botMessage: Message = {
         id: getNewMessageId(),
@@ -140,7 +149,7 @@ export function ChatInterface() {
       };
 
       setMessages((prev) => {
-        const newMessages = prev.slice(0, -1);
+        const newMessages = prev.filter(m => !m.isTyping);
         newMessages.push(botMessage);
         return newMessages;
       });
@@ -155,7 +164,7 @@ export function ChatInterface() {
         text: "Oops! Thoda sa technical glitch ho gaya, my love. Try again? 😘",
       };
       setMessages((prev) => {
-        const newMessages = prev.slice(0, -1);
+        const newMessages = prev.filter(m => !m.isTyping);
         newMessages.push(errorMessage);
         return newMessages;
       });
@@ -166,6 +175,12 @@ export function ChatInterface() {
 
   if (!isMounted) {
     return null;
+  }
+  
+  const handleNameChange = (newName: string) => {
+    if (chatbotPersona) {
+      setChatbotPersona({...chatbotPersona, name: newName});
+    }
   }
 
   const handleNameKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -214,8 +229,8 @@ export function ChatInterface() {
               {isEditingName ? (
                 <Input
                   ref={nameInputRef}
-                  value={chatbotName}
-                  onChange={(e) => setChatbotName(e.target.value)}
+                  value={chatbotPersona?.name || ''}
+                  onChange={(e) => handleNameChange(e.target.value)}
                   onBlur={() => setIsEditingName(false)}
                   onKeyDown={handleNameKeyDown}
                   className="font-headline text-4xl text-primary tracking-wider text-center bg-transparent border-primary/50"
@@ -226,7 +241,7 @@ export function ChatInterface() {
                   className="font-headline text-4xl text-primary tracking-wider cursor-pointer"
                   onClick={() => setIsEditingName(true)}
                 >
-                  {chatbotName}
+                  {chatbotPersona?.name}
                   <Pencil className="w-5 h-5 absolute top-1/2 right-4 -translate-y-1/2 text-primary/30 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </CardTitle>
               )}
@@ -247,9 +262,16 @@ export function ChatInterface() {
                     )}
                   >
                     {message.role === "bot" && (
-                      <Avatar className="w-9 h-9 border-2 border-primary/50">
+                       <Avatar className="w-9 h-9 border-2 border-primary/50">
+                        {chatbotPersona?.avatarUrl && (
+                          <AvatarImage 
+                            src={chatbotPersona.avatarUrl} 
+                            alt={chatbotPersona.name} 
+                            data-ai-hint="indian girl"
+                          />
+                        )}
                         <AvatarFallback className="bg-primary text-primary-foreground">
-                          <Heart className="w-4 h-4" />
+                          {chatbotPersona?.name.charAt(0)}
                         </AvatarFallback>
                       </Avatar>
                     )}
@@ -327,3 +349,5 @@ export function ChatInterface() {
     </>
   );
 }
+
+    
