@@ -17,7 +17,7 @@ import { getAiResponse } from "@/app/actions";
 import { cn } from "@/lib/utils";
 
 interface Message {
-  id: string;
+  id: number;
   role: "user" | "bot";
   text: string;
   isTyping?: boolean;
@@ -27,6 +27,8 @@ const formSchema = z.object({
   message: z.string().min(1, { message: " " }),
 });
 type FormValues = z.infer<typeof formSchema>;
+
+let messageIdCounter = 0;
 
 export function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -47,22 +49,22 @@ export function ChatInterface() {
     if (isLoading) return;
     const userInput = data.message;
 
-    const userMessage: Message = { id: `user-${Date.now()}`, role: "user", text: userInput };
-    setMessages((prev) => [...prev, userMessage, { id: "typing", role: "bot", text: "", isTyping: true }]);
+    const userMessage: Message = { id: messageIdCounter++, role: "user", text: userInput };
+    setMessages((prev) => [...prev, userMessage, { id: messageIdCounter++, role: "bot", text: "", isTyping: true }]);
     form.reset();
     setIsLoading(true);
 
     try {
       const botResponse = await getAiResponse({ message: userInput });
       
-      const botMessage: Message = { id: `bot-${Date.now()}`, role: "bot", text: botResponse };
+      const botMessage: Message = { id: messageIdCounter++, role: "bot", text: botResponse };
 
       setMessages((prev) => [...prev.filter((m) => !m.isTyping), botMessage]);
 
       setShowHearts(true);
       setTimeout(() => setShowHearts(false), 4000);
     } catch (error) {
-       const errorMessage: Message = { id: `bot-error-${Date.now()}`, role: "bot", text: "Oh no, my heart skipped a beat... and my circuits too. Try again? 😘" };
+       const errorMessage: Message = { id: messageIdCounter++, role: "bot", text: "Oh no, my heart skipped a beat... and my circuits too. Try again? 😘" };
       setMessages((prev) => [...prev.filter((m) => !m.isTyping), errorMessage]);
     } finally {
       setIsLoading(false);
