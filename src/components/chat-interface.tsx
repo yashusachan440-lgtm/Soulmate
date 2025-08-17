@@ -3,7 +3,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { SendHorizonal, User, Pencil, Venus, Mars, Sparkles } from "lucide-react";
+import { SendHorizonal, User, Pencil, Venus, Mars } from "lucide-react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -97,7 +97,7 @@ export function ChatInterface() {
     return { 
       name: 'Veer', 
       initialMessage: "Hey beautiful, you finally made it. I was just thinking about you... 😏",
-      avatarUrl: "https://placehold.co/128x128.png", // Placeholder for Veer
+      avatarUrl: "https://placehold.co/128x128.png",
     };
   }, []);
 
@@ -224,8 +224,19 @@ export function ChatInterface() {
         <Card className="w-full max-w-2xl h-[95vh] flex flex-col shadow-2xl rounded-3xl relative overflow-hidden border-primary/20 bg-card/80 dark:bg-card/60 backdrop-blur-xl">
           {showHearts && <FloatingHearts />}
           <CardHeader className="text-center border-b relative group flex-shrink-0 bg-card/50 backdrop-blur-sm">
-            <div className="flex items-center justify-center gap-2">
-              <Sparkles className="w-7 h-7 text-primary/70" />
+            <div className="flex items-center justify-center gap-3">
+              {chatbotPersona?.avatarUrl && (
+                <Avatar className="w-10 h-10 border-2 border-primary/50">
+                  <AvatarImage 
+                    src={chatbotPersona.avatarUrl} 
+                    alt={chatbotPersona.name}
+                    data-ai-hint={userGender === 'male' ? "indian girl" : "indian man"}
+                  />
+                  <AvatarFallback className="bg-primary text-primary-foreground">
+                    {chatbotPersona?.name.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
+              )}
               {isEditingName ? (
                 <Input
                   ref={nameInputRef}
@@ -267,7 +278,7 @@ export function ChatInterface() {
                           <AvatarImage 
                             src={chatbotPersona.avatarUrl} 
                             alt={chatbotPersona.name} 
-                            data-ai-hint="indian girl"
+                            data-ai-hint={userGender === 'male' ? "indian girl" : "indian man"}
                           />
                         )}
                         <AvatarFallback className="bg-primary text-primary-foreground">
@@ -349,5 +360,3 @@ export function ChatInterface() {
     </>
   );
 }
-
-    
