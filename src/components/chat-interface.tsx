@@ -38,17 +38,18 @@ const initialMessages: Message[] = [
 ];
 
 export function ChatInterface() {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [isMounted, setIsMounted] = useState(false);
+  const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [isLoading, setIsLoading] = useState(false);
   const [showHearts, setShowHearts] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const messageIdCounterRef = useRef(1);
-
-  useEffect(() => {
-    setIsMounted(true);
-    setMessages(initialMessages);
-  }, []);
+  const messageIdCounterRef = useRef(messages.length);
+  
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      message: "",
+    },
+  });
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -87,10 +88,6 @@ export function ChatInterface() {
       setIsLoading(false);
     }
   };
-
-  if (!isMounted) {
-    return null;
-  }
 
   return (
     <div className="flex h-screen w-full items-center justify-center bg-gradient-to-br from-background via-secondary to-background p-4">
