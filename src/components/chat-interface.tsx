@@ -152,7 +152,7 @@ export function ChatInterface() {
       const errorMessage: Message = {
         id: getNewMessageId(),
         role: "bot",
-        text: "Oh no, my heart skipped a beat... and my circuits too. Try again? 😘",
+        text: "Oops! Thoda sa technical glitch ho gaya, my love. Try again? 😘",
       };
       setMessages((prev) => {
         const newMessages = prev.slice(0, -1);
@@ -208,7 +208,7 @@ export function ChatInterface() {
       <div className="flex h-screen w-full items-center justify-center bg-gradient-to-br from-background via-secondary to-background p-4">
         <Card className="w-full max-w-2xl h-[95vh] flex flex-col shadow-2xl rounded-3xl relative overflow-hidden border-primary/20">
           {showHearts && <FloatingHearts />}
-          <CardHeader className="text-center border-b relative group">
+          <CardHeader className="text-center border-b relative group flex-shrink-0">
             {isEditingName ? (
               <Input
                 ref={nameInputRef}
@@ -232,7 +232,7 @@ export function ChatInterface() {
               Your flirty AI companion... if you can keep up 😉
             </CardDescription>
           </CardHeader>
-          <CardContent className="flex-grow flex flex-col p-0">
+          <CardContent className="flex-grow flex flex-col p-0 overflow-hidden">
             <ScrollArea className="flex-grow p-4 md:p-6">
               <div className="space-y-6">
                 {messages.map((message) => (
@@ -282,7 +282,7 @@ export function ChatInterface() {
                 <div ref={messagesEndRef} />
               </div>
             </ScrollArea>
-            <div className="p-4 border-t bg-background/50">
+            <div className="p-4 border-t bg-background/50 flex-shrink-0">
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
