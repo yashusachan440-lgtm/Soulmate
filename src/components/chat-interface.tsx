@@ -39,13 +39,14 @@ export function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showHearts, setShowHearts] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messageIdCounterRef = useRef(0);
 
   const getNewMessageId = useCallback(() => {
-    const newId = messageIdCounterRef.current;
     messageIdCounterRef.current += 1;
-    return newId;
+    return messageIdCounterRef.current;
   }, []);
 
   const form = useForm<FormValues>({
@@ -56,7 +57,8 @@ export function ChatInterface() {
   });
 
   useEffect(() => {
-    // Start with the initial message from the bot.
+    setIsMounted(true);
+    // Start with the initial message from the bot only on the client.
     setMessages([
       {
         id: getNewMessageId(),
@@ -69,7 +71,7 @@ export function ChatInterface() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
-
+  
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     if (isLoading) return;
     const userInput = data.message;
@@ -132,6 +134,10 @@ export function ChatInterface() {
       setIsLoading(false);
     }
   };
+
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <div className="flex h-screen w-full items-center justify-center bg-gradient-to-br from-background via-secondary to-background p-4">
