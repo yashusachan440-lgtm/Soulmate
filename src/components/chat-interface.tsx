@@ -32,12 +32,7 @@ export function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showHearts, setShowHearts] = useState(false);
-  const [isClient, setIsClient] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -52,7 +47,7 @@ export function ChatInterface() {
     if (isLoading) return;
     const userInput = data.message;
 
-    const userMessage: Message = { id: Date.now().toString(), role: "user", text: userInput };
+    const userMessage: Message = { id: `user-${Date.now()}`, role: "user", text: userInput };
     setMessages((prev) => [...prev, userMessage, { id: "typing", role: "bot", text: "", isTyping: true }]);
     form.reset();
     setIsLoading(true);
@@ -60,24 +55,14 @@ export function ChatInterface() {
     try {
       const botResponse = await getAiResponse({ message: userInput });
       
-      let botMessage: Message;
-      if (isClient) {
-        botMessage = { id: (Date.now() + 1).toString(), role: "bot", text: botResponse };
-      } else {
-        botMessage = { id: 'bot-response', role: "bot", text: botResponse };
-      }
+      const botMessage: Message = { id: `bot-${Date.now()}`, role: "bot", text: botResponse };
 
       setMessages((prev) => [...prev.filter((m) => !m.isTyping), botMessage]);
 
       setShowHearts(true);
       setTimeout(() => setShowHearts(false), 4000);
     } catch (error) {
-       let errorMessage: Message;
-      if (isClient) {
-        errorMessage = { id: (Date.now() + 1).toString(), role: "bot", text: "Oh no, my heart skipped a beat... and my circuits too. Try again? 😘" };
-      } else {
-        errorMessage = { id: 'bot-error', role: "bot", text: "Oh no, my heart skipped a beat... and my circuits too. Try again? 😘" };
-      }
+       const errorMessage: Message = { id: `bot-error-${Date.now()}`, role: "bot", text: "Oh no, my heart skipped a beat... and my circuits too. Try again? 😘" };
       setMessages((prev) => [...prev.filter((m) => !m.isTyping), errorMessage]);
     } finally {
       setIsLoading(false);
