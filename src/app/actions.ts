@@ -1,6 +1,8 @@
+
 "use server";
 
-import { flirtyHinglishChat, type FlirtyHinglishChatInput } from "@/ai/flows/flirty-hinglish-chat";
+import { flirtyHinglishChat } from "@/ai/flows/flirty-hinglish-chat";
+import type { FlirtyHinglishChatInput } from "@/ai/types/flirty-hinglish-chat";
 
 export async function getAiResponse(input: FlirtyHinglishChatInput): Promise<string> {
   try {
