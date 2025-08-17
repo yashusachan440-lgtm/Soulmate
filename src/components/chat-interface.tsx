@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { SendHorizonal, Heart, User, Pencil, Venus, Mars, Gem } from "lucide-react";
+import { SendHorizonal, Heart, User, Pencil, Venus, Mars } from "lucide-react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -56,7 +56,7 @@ export function ChatInterface() {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const getNewMessageId = useCallback((): string => `msg_${Date.now()}_${Math.random()}`,[]);
+  const getNewMessageId = (): string => `msg_${Date.now()}_${Math.random()}`;
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -106,7 +106,7 @@ export function ChatInterface() {
         text: initialMessage,
       },
     ]);
-  }, [getNewMessageId, getPersona]);
+  }, [getPersona]);
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     if (isLoading || !userGender) return;
@@ -122,7 +122,6 @@ export function ChatInterface() {
     setMessages((prev) => [...prev, userMessage]);
     setIsLoading(true);
 
-    // Add typing indicator immediately after user message
     const typingMessage: Message = {
       id: getNewMessageId(),
       role: "bot",
@@ -132,7 +131,7 @@ export function ChatInterface() {
     setMessages((prev) => [...prev, typingMessage]);
 
     try {
-      const botResponse = await getAiResponse({ message: userInput, userGender });
+      const botResponse = await getAiResponse({ message: userInput, userGender: userGender });
 
       const botMessage: Message = {
         id: getNewMessageId(),
@@ -141,7 +140,6 @@ export function ChatInterface() {
       };
 
       setMessages((prev) => {
-        // Replace the typing indicator with the actual bot message
         const newMessages = prev.slice(0, -1);
         newMessages.push(botMessage);
         return newMessages;
@@ -150,13 +148,13 @@ export function ChatInterface() {
       setShowHearts(true);
       setTimeout(() => setShowHearts(false), 4000);
     } catch (error) {
+      console.error(error);
       const errorMessage: Message = {
         id: getNewMessageId(),
         role: "bot",
         text: "Oh no, my heart skipped a beat... and my circuits too. Try again? 😘",
       };
       setMessages((prev) => {
-         // Replace the typing indicator with the error message
         const newMessages = prev.slice(0, -1);
         newMessages.push(errorMessage);
         return newMessages;
