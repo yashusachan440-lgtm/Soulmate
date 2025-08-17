@@ -18,7 +18,7 @@ import { getAiResponse } from "@/app/actions";
 import { cn } from "@/lib/utils";
 
 interface Message {
-  id: string;
+  id: number;
   role: "user" | "bot";
   text: string;
   isTyping?: boolean;
@@ -31,7 +31,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 const initialMessages: Message[] = [
   {
-    id: 'msg-0',
+    id: 0,
     role: 'bot',
     text: "Hey there, handsome. Ready to play? I've been waiting for you... 😉",
   },
@@ -41,6 +41,7 @@ export function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [isLoading, setIsLoading] = useState(false);
   const [showHearts, setShowHearts] = useState(false);
+  const [isClient, setIsClient] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messageIdCounterRef = useRef(messages.length);
   
@@ -52,13 +53,19 @@ export function ChatInterface() {
   });
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (isClient) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages, isClient]);
   
   const getNewMessageId = () => {
     const newId = messageIdCounterRef.current;
     messageIdCounterRef.current += 1;
-    return `msg-${newId}`;
+    return newId;
   };
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
@@ -77,17 +84,40 @@ export function ChatInterface() {
       
       const botMessage: Message = { id: getNewMessageId(), role: "bot", text: botResponse };
 
-      setMessages((prev) => [...prev.slice(0, -1), botMessage]);
+      setMessages((prev) => {
+          const newMessages = [...prev];
+          const lastMessage = newMessages[newMessages.length - 1];
+          if (lastMessage && lastMessage.isTyping) {
+              newMessages[newMessages.length - 1] = botMessage;
+          } else {
+              newMessages.push(botMessage);
+          }
+          return newMessages;
+      });
+
 
       setShowHearts(true);
       setTimeout(() => setShowHearts(false), 4000);
     } catch (error) {
        const errorMessage: Message = { id: getNewMessageId(), role: "bot", text: "Oh no, my heart skipped a beat... and my circuits too. Try again? 😘" };
-      setMessages((prev) => [...prev.slice(0, -1), errorMessage]);
+      setMessages((prev) => {
+        const newMessages = [...prev];
+        const lastMessage = newMessages[newMessages.length - 1];
+        if (lastMessage && lastMessage.isTyping) {
+            newMessages[newMessages.length - 1] = errorMessage;
+        } else {
+            newMessages.push(errorMessage);
+        }
+        return newMessages;
+      });
     } finally {
       setIsLoading(false);
     }
   };
+
+  if (!isClient) {
+    return null;
+  }
 
   return (
     <div className="flex h-screen w-full items-center justify-center bg-gradient-to-br from-background via-secondary to-background p-4">
