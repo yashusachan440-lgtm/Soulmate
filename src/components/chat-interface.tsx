@@ -3,7 +3,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { SendHorizonal, User, Pencil, Venus, Mars } from "lucide-react";
+import { SendHorizonal, User, Pencil, Venus, Mars, Heart } from "lucide-react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -16,6 +16,7 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
+  CardFooter,
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -366,7 +367,7 @@ export function ChatInterface() {
                         <FormControl>
                           <Input
                             {...field}
-                            placeholder="Message your dilbar..."
+                            placeholder="Message your companion..."
                             className="flex-grow text-base h-12 rounded-full px-5 bg-background/70 focus:bg-background"
                             disabled={isLoading || !userGender}
                             autoComplete="off"
@@ -389,6 +390,29 @@ export function ChatInterface() {
               </Form>
             </div>
           </CardContent>
+          <CardFooter className="justify-center items-center p-2 border-t bg-card/50 backdrop-blur-sm">
+             <p className="text-xs text-muted-foreground flex items-center gap-1.5">
+                Made with <Heart className="w-3 h-3 text-red-500" /> by
+                <a
+                  href="https://www.linkedin.com/in/myselfdivyanshsingh?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline"
+                >
+                  Divyansh
+                </a>
+                &
+                <a
+                  href="https://www.linkedin.com/in/myselfswastikmishra?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline"
+                >
+                  Swastik
+                </a>
+                .
+              </p>
+          </CardFooter>
         </Card>
       </div>
     </>

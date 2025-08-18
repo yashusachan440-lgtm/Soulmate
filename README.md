@@ -1,17 +1,17 @@
 # Vanika - Your Flirty AI Companion
 
-Welcome to Vanika, a delightful and playful chatbot experience where you can engage in flirtatious Hinglish conversations with a charming AI.
-
-This project is built with Next.js and Firebase Genkit, showcasing how to create engaging, AI-powered applications.
+Welcome to Vanika, a delightful and playful chatbot experience where you can engage in flirtatious Hinglish conversations with a charming AI. This project showcases how to create engaging, AI-powered applications with a beautiful, modern user interface.
 
 ![Vanika Screenshot](https://placehold.co/800x600.png?text=Vanika+UI)
 *A sneak peek of the Vanika interface.*
 
 ## ✨ Features
 
-- **Flirty AI Chatbot**: Engage in witty, seductive, and playful conversations in Hinglish.
-- **Real-time Interaction**: Get instant responses from the AI, creating a lively chat experience.
-- **Playful UI**: A beautiful interface with floating hearts to enhance the romantic mood.
+- **Dual AI Personas**: Chat with "Vanika" (a flirty girlfriend persona) or "Veer" (a charming boyfriend persona) based on your gender selection.
+- **Flirty Hinglish Chatbot**: Engage in witty, seductive, and playful conversations in a natural Hinglish dialect.
+- **Real-time Interaction**: Get instant, dynamic responses from the AI, creating a lively and believable chat experience.
+- **Playful & Romantic UI**: A beautiful, modern interface with a shifting gradient background and floating hearts to enhance the romantic mood.
+- **Customizable Persona**: Users can change the name and avatar of their AI companion.
 - **Built with Genkit**: Leverages the power of Google's Gemini models through Firebase Genkit for intelligent and creative responses.
 - **Production-Ready**: A solid foundation to build upon, with best practices for Next.js and AI integration.
 
@@ -97,4 +97,6 @@ npm run start
 
 Make sure to set up your environment variables (like `GEMINI_API_KEY`) in your production environment.
 
-Enjoy the playful banter! ❤️
+---
+
+Made with ❤️ by [Divyansh](https://www.linkedin.com/in/myselfdivyanshsingh?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app) & [Swastik](https://www.linkedin.com/in/myselfswastikmishra?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app).
