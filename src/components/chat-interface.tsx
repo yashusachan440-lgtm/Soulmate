@@ -37,7 +37,6 @@ interface Message {
   id: string;
   role: "user" | "bot";
   text: string;
-  isTyping?: boolean;
 }
 
 const formSchema = z.object({
@@ -150,47 +149,54 @@ export function ChatInterface() {
     setMessages((prev) => [...prev, userMessage]);
     setIsLoading(true);
 
-    const typingMessage: Message = {
-      id: getNewMessageId(),
+    // Create a new bot message placeholder
+    const botMessageId = getNewMessageId();
+    const botMessagePlaceholder: Message = {
+      id: botMessageId,
       role: "bot",
       text: "",
-      isTyping: true,
     };
-    setMessages((prev) => [...prev, typingMessage]);
-
+    setMessages((prev) => [...prev, botMessagePlaceholder]);
+    
     try {
-      const botResponse = await getAiResponse({ 
+      const stream = await getAiResponse({ 
         message: userInput, 
         userGender,
         chatbotName: chatbotPersona.name,
       });
 
-      const botMessage: Message = {
-        id: getNewMessageId(),
-        role: "bot",
-        text: botResponse,
-      };
-
-      setMessages((prev) => {
-        const newMessages = prev.filter(m => !m.isTyping);
-        newMessages.push(botMessage);
-        return newMessages;
-      });
-
+      const reader = stream.getReader();
+      const decoder = new TextDecoder();
+      
+      let done = false;
+      let fullResponse = "";
+      while (!done) {
+        const { value, done: streamDone } = await reader.read();
+        done = streamDone;
+        if (value) {
+          fullResponse += decoder.decode(value, { stream: true });
+          setMessages((prev) =>
+            prev.map((msg) =>
+              msg.id === botMessageId
+                ? { ...msg, text: fullResponse }
+                : msg
+            )
+          );
+        }
+      }
       setShowHearts(true);
       setTimeout(() => setShowHearts(false), 4000);
+
     } catch (error) {
       console.error(error);
-      const errorMessage: Message = {
-        id: getNewMessageId(),
-        role: "bot",
-        text: "Oops! Thoda sa technical glitch ho gaya, my love. Try again? 😘",
-      };
-      setMessages((prev) => {
-        const newMessages = prev.filter(m => !m.isTyping);
-        newMessages.push(errorMessage);
-        return newMessages;
-      });
+      const errorMessageText = "Oops! Thoda sa technical glitch ho gaya, my love. Try again? 😘";
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === botMessageId
+            ? { ...msg, text: errorMessageText }
+            : msg
+        )
+      );
     } finally {
       setIsLoading(false);
     }
@@ -327,7 +333,7 @@ export function ChatInterface() {
                           : "bg-card text-card-foreground rounded-bl-lg border"
                       )}
                     >
-                      {message.isTyping ? (
+                      {isLoading && !message.text && message.role === 'bot' ? (
                         <div className="flex items-center space-x-1 p-1">
                           <span className="h-2 w-2 bg-muted-foreground rounded-full animate-bounce [animation-delay:-0.3s]" />
                           <span className="h-2 w-2 bg-muted-foreground rounded-full animate-bounce [animation-delay:-0.15s]" />
@@ -336,6 +342,9 @@ export function ChatInterface() {
                       ) : (
                         <p className="font-body text-base leading-relaxed">
                           {message.text}
+                          {isLoading && message.id === messages[messages.length - 1].id && (
+                             <span className="inline-block w-2 h-4 bg-foreground ml-1 animate-pulse" />
+                          )}
                         </p>
                       )}
                     </div>

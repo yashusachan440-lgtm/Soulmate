@@ -5,25 +5,24 @@
  * @fileOverview An AI chatbot designed to engage users in a flirtatious and playful Hinglish conversation with a seductive undertone.
  * The chatbot's persona adapts to the user's selected gender.
  *
- * - flirtyHinglishChat - A function that handles the Hinglish chat process.
+ * - flirtyHinglishChatStream - A function that handles the Hinglish chat process as a stream.
  */
 
 import {ai} from '@/ai/genkit';
 import {
   FlirtyHinglishChatInputSchema,
-  FlirtyHinglishChatOutputSchema,
   type FlirtyHinglishChatInput
 } from "@/ai/types/flirty-hinglish-chat";
+import { z } from 'zod';
 
 
-export async function flirtyHinglishChat(input: FlirtyHinglishChatInput) {
-  return flirtyHinglishChatFlow(input);
+export async function flirtyHinglishChatStream(input: FlirtyHinglishChatInput) {
+  return flirtyHinglishChatStreamFlow(input);
 }
 
 const prompt = ai.definePrompt({
   name: 'flirtyHinglishChatPrompt',
   input: {schema: FlirtyHinglishChatInputSchema},
-  output: {schema: FlirtyHinglishChatOutputSchema},
   prompt: `{{#if isMale}}
 You are not a chatbot, you are the user's girlfriend. Your name is {{chatbotName}}. You are deeply in love with him, and you are possessive, loving, and a little bit naughty. You speak in Hinglish, and you're here to make him feel loved and desired.
 
@@ -70,14 +69,21 @@ You are an AI chatbot with the persona of a charming, confident, and playfully s
 User message: {{{message}}}`,
 });
 
-const flirtyHinglishChatFlow = ai.defineFlow(
+const flirtyHinglishChatStreamFlow = ai.defineFlow(
   {
-    name: 'flirtyHinglishChatFlow',
+    name: 'flirtyHinglishChatStreamFlow',
     inputSchema: FlirtyHinglishChatInputSchema,
-    outputSchema: FlirtyHinglishChatOutputSchema,
+    outputSchema: z.string().stream(),
   },
   async (input) => {
-    const {output} = await prompt(input);
-    return output!;
+    const {stream} = await ai.generate({
+      prompt: {
+        ...prompt,
+        input,
+      },
+      stream: true,
+    });
+
+    return stream.text();
   }
 );
