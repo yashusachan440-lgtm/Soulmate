@@ -14,11 +14,11 @@ export const FloatingHearts = () => {
 
   useEffect(() => {
     const generateHearts = () => {
-      return Array.from({ length: 10 }).map(() => ({
+      return Array.from({ length: 15 }).map(() => ({
         left: `${Math.random() * 100}%`,
-        animationDuration: `${Math.random() * 2 + 3}s`, // 3s to 5s
+        animationDuration: `${Math.random() * 3 + 4}s`, // 4s to 7s
         animationDelay: `${Math.random() * 2}s`,
-        fontSize: `${Math.random() * 1.5 + 0.75}rem`, // 0.75rem to 2.25rem
+        fontSize: `${Math.random() * 2 + 1}rem`, // 1rem to 3rem
       }));
     };
     setHearts(generateHearts());

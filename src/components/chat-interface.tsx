@@ -251,7 +251,7 @@ export function ChatInterface() {
         accept="image/*"
       />
 
-      <div className="flex h-screen w-full items-center justify-center bg-gradient-to-br from-pink-100 via-rose-100 to-violet-200 dark:from-gray-900 dark:via-purple-900/30 dark:to-gray-900 p-4">
+      <div className="flex h-screen w-full items-center justify-center bg-gradient-to-br from-rose-100 via-fuchsia-100 to-indigo-200 dark:from-gray-900 dark:via-purple-900/30 dark:to-gray-900 p-4">
         <Card className="w-full max-w-2xl h-[95vh] flex flex-col shadow-2xl rounded-3xl relative overflow-hidden border-primary/20 bg-card/80 dark:bg-card/60 backdrop-blur-xl">
           {showHearts && <FloatingHearts />}
           <CardHeader className="text-center border-b relative group flex-shrink-0 bg-card/50 backdrop-blur-sm">
