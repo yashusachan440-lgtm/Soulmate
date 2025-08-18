@@ -2,7 +2,7 @@
 
 Welcome to Vanika, a delightful and playful chatbot experience where you can engage in flirtatious Hinglish conversations with a charming AI. This project showcases how to create engaging, AI-powered applications with a beautiful, modern user interface.
 
-![Vanika Screenshot](https://placehold.co/800x600.png?text=Vanika+UI)
+![Vanika Screenshot](https://placehold.co/800x600.png)
 *A sneak peek of the Vanika interface.*
 
 ## ✨ Features
@@ -25,7 +25,7 @@ This application is built with a modern, robust, and scalable tech stack, perfec
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/) with [ShadCN UI](https://ui.shadcn.com/) components
 - **AI/Generative**: [Firebase Genkit](https://firebase.google.com/docs/genkit) with Google Gemini
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
-- **Deployment**: Ready for [Firebase App Hosting](https://firebase.google.com/docs/app-hosting) or other Node.js environments.
+- **Deployment**: Ready for [Netlify](https://www.netlify.com/), [Vercel](https://vercel.com/), or other Node.js environments.
 
 ### Architecture
 
@@ -98,17 +98,13 @@ To create an optimized production build of the application, run the following co
 npm run build
 ```
 
-This will compile and optimize the Next.js frontend and the Genkit backend into a `.next` directory, ready for deployment.
+This will compile and optimize the Next.js frontend and the Genkit backend into a `.next` directory, ready for deployment. The standard `next start` command can be used to run the production server.
 
 ## 🚀 Deployment
 
-This application is perfectly configured for deployment on **Firebase App Hosting**. You can deploy it with a single command using the Firebase CLI after setting up your Firebase project.
+This application is ready for deployment on any modern hosting platform that supports Node.js, such as **Netlify** or **Vercel**.
 
-For other platforms that support Node.js, you can start the production server using:
-```bash
-npm run start
-```
-Remember to set up your environment variables (like `GEMINI_API_KEY`) in your production hosting environment.
+Simply connect your Git repository to your hosting provider and configure it to run the standard Next.js build command (`npm run build` or `next build`). Remember to set up your environment variables (like `GEMINI_API_KEY`) in your production hosting environment.
 
 ---
 
