@@ -54,7 +54,7 @@ export function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showHearts, setShowHearts] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
+  const [isClient, setIsClient] = useState(false);
   const [chatbotPersona, setChatbotPersona] = useState<Persona | null>(null);
   const [isEditingName, setIsEditingName] = useState(false);
   const nameInputRef = useRef<HTMLInputElement>(null);
@@ -74,7 +74,7 @@ export function ChatInterface() {
   });
   
   useEffect(() => {
-    setIsMounted(true);
+    setIsClient(true);
   }, []);
 
   useEffect(() => {
@@ -102,21 +102,24 @@ export function ChatInterface() {
     };
   }, []);
 
+  useEffect(() => {
+    if (userGender) {
+      const persona = getPersona(userGender);
+      setChatbotPersona(persona);
+      setMessages([
+        {
+          id: getNewMessageId(),
+          role: "bot",
+          text: persona.initialMessage,
+        },
+      ]);
+    }
+  }, [userGender, getPersona]);
+
   const handleGenderSelect = useCallback((gender: UserGender) => {
     setUserGender(gender);
     setIsGenderModalOpen(false);
-
-    const persona = getPersona(gender);
-    setChatbotPersona(persona);
-
-    setMessages([
-      {
-        id: getNewMessageId(),
-        role: "bot",
-        text: persona.initialMessage,
-      },
-    ]);
-  }, [getPersona]);
+  }, []);
 
   const handleAvatarUploadClick = () => {
     fileInputRef.current?.click();
@@ -197,10 +200,6 @@ export function ChatInterface() {
     }
   };
 
-  if (!isMounted) {
-    return null;
-  }
-  
   const handleNameChange = (newName: string) => {
     if (chatbotPersona) {
       setChatbotPersona({...chatbotPersona, name: newName});
@@ -213,9 +212,13 @@ export function ChatInterface() {
     }
   };
 
+  if (!isClient) {
+    return null; // Render nothing on the server
+  }
+
   return (
     <>
-      <Dialog open={isGenderModalOpen} onOpenChange={() => { /* Prevents closing by clicking away */ }}>
+      <Dialog open={isGenderModalOpen && isClient} onOpenChange={() => { /* Prevents closing by clicking away */ }}>
         <DialogContent className="max-w-sm" hideCloseButton={true}>
           <DialogHeader>
             <DialogTitle className="text-center text-2xl font-headline tracking-wide">Who are you, darling?</DialogTitle>
