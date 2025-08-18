@@ -104,7 +104,19 @@ This will compile and optimize the Next.js frontend and the Genkit backend into 
 
 This application is ready for deployment on any modern hosting platform that supports Node.js, such as **Netlify** or **Vercel**.
 
-Simply connect your Git repository to your hosting provider and configure it to run the standard Next.js build command (`npm run build` or `next build`). Remember to set up your environment variables (like `GEMINI_API_KEY`) in your production hosting environment.
+### Netlify Deployment Steps
+
+1.  **Connect Your Repository**: Connect your Git repository (e.g., from GitHub) to your Netlify account.
+2.  **Configure Build Settings**: Netlify will automatically detect that this is a Next.js project. It should set the build command and publish directory correctly. If you need to set them manually, use:
+    *   **Build command**: `npm run build`
+    *   **Publish directory**: `.next`
+3.  **Set Environment Variables**: This is the most important step for the AI to work.
+    *   In your Netlify dashboard, go to your site's settings.
+    *   Navigate to **Site configuration > Environment variables**.
+    *   Click **Add a variable** and create a new variable:
+        *   **Key**: `GEMINI_API_KEY`
+        *   **Value**: Paste your Google AI API key here.
+4.  **Deploy**: Trigger a new deployment from the Netlify UI.
 
 ---
 

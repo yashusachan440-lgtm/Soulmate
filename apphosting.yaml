@@ -1,0 +1,32 @@
+# The name of your backend service (custom-backend)
+run:
+  # The command to start your custom backend server
+  command: npm run start
+  # The port your backend service will listen on
+  port: 9002
+# The resource allocation for your backend service
+resources:
+  # The amount of CPU allocated to your backend service
+  cpu: 1
+  # The amount of memory allocated to your backend service
+  memoryMiB: 512
+# The number of instances for your backend service
+scaling:
+  # The minimum number of instances
+  minInstances: 1
+  # The maximum number of instances
+  maxInstances: 2
+# The environment variables for your backend service
+env:
+  # The environment variable for the Gemini API key
+  - variable: GEMINI_API_KEY
+    # The availability of the environment variable at build and runtime
+    availability:
+      - BUILD
+      - RUNTIME
+# The ingress settings for your backend service
+ingress: all
+# The compatibility of the service with Next.js
+nextjs:
+  # The version of Next.js used in the project
+  version: 15.3.3
