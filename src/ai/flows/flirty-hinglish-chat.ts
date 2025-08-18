@@ -13,11 +13,23 @@ import {
   FlirtyHinglishChatInputSchema,
   type FlirtyHinglishChatInput
 } from "@/ai/types/flirty-hinglish-chat";
-import { z } from 'zod';
+import { z } from 'genkit';
 
 
-export async function flirtyHinglishChatStream(input: FlirtyHinglishChatInput) {
-  return flirtyHinglishChatStreamFlow(input);
+export async function flirtyHinglishChatStream(input: FlirtyHinglishChatInput): Promise<ReadableStream<string>> {
+  const {stream, response} = flirtyHinglishChatStreamFlow(input);
+  
+  const textEncoder = new TextEncoder();
+  const readableStream = new ReadableStream({
+    async start(controller) {
+      for await (const chunk of stream) {
+        controller.enqueue(textEncoder.encode(chunk.text));
+      }
+      controller.close();
+    }
+  });
+
+  return readableStream;
 }
 
 const prompt = ai.definePrompt({
