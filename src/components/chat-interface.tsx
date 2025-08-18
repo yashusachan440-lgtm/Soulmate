@@ -265,7 +265,6 @@ export function ChatInterface() {
                   <AvatarImage 
                     src={chatbotPersona.avatarUrl} 
                     alt={chatbotPersona.name}
-                    data-ai-hint={userGender === 'male' ? "indian girl" : "indian man"}
                   />
                   <AvatarFallback className="bg-primary text-primary-foreground">
                     {chatbotPersona?.name.charAt(0)}
@@ -313,7 +312,6 @@ export function ChatInterface() {
                           <AvatarImage 
                             src={chatbotPersona.avatarUrl} 
                             alt={chatbotPersona.name} 
-                            data-ai-hint={userGender === 'male' ? "indian girl" : "indian man"}
                           />
                         )}
                         <AvatarFallback className="bg-primary text-primary-foreground">

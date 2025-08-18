@@ -15,13 +15,27 @@ Welcome to Vanika, a delightful and playful chatbot experience where you can eng
 - **Built with Genkit**: Leverages the power of Google's Gemini models through Firebase Genkit for intelligent and creative responses.
 - **Production-Ready**: A solid foundation to build upon, with best practices for Next.js and AI integration.
 
-## 🚀 Tech Stack
+## 🚀 Tech Stack & Architecture
+
+This application is built with a modern, robust, and scalable tech stack, perfect for creating production-grade AI applications.
+
+### Tech Stack
 
 - **Framework**: [Next.js](https://nextjs.org/) (App Router)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/) with [ShadCN UI](https://ui.shadcn.com/) components
 - **AI/Generative**: [Firebase Genkit](https://firebase.google.com/docs/genkit) with Google Gemini
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
 - **Deployment**: Ready for [Firebase App Hosting](https://firebase.google.com/docs/app-hosting) or other Node.js environments.
+
+### Architecture
+
+The application follows a clean, decoupled architecture:
+
+-   **Frontend (`src/app`, `src/components`)**: The user interface is built with React and Next.js, using the App Router for clear, file-based routing. We use Server Components where possible for better performance. All UI components are from the excellent ShadCN UI library, which are styled with Tailwind CSS. The romantic theme is configured in `src/app/globals.css`.
+
+-   **Backend Logic (`src/app/actions.ts`)**: Communication between the frontend and the AI backend is handled via Next.js Server Actions. This provides a seamless and secure way to call server-side functions directly from our React components without needing to manually create API endpoints.
+
+-   **AI Flows (`src/ai/flows`)**: This is the heart of our AI. We use Firebase Genkit to define our generative AI logic. The `flirty-hinglish-chat.ts` file defines the prompts and logic for how the AI should respond based on the user's gender and message. Genkit orchestrates the calls to the powerful Google Gemini model.
 
 ## 🛠️ Getting Started
 
@@ -47,9 +61,9 @@ Follow these steps to get the Vanika application running on your local machine.
     ```
 
 3.  **Set up environment variables:**
-    Create a `.env` file in the root of the project by copying the example file:
+    Create a `.env` file in the root of the project. You can do this by copying the example if one exists, or creating a new one:
     ```bash
-    cp .env.example .env
+    touch .env
     ```
     Open the `.env` file and add your Google AI API Key:
     ```
@@ -58,44 +72,43 @@ Follow these steps to get the Vanika application running on your local machine.
 
 ### Running the Development Server
 
-You need to run two separate processes for the application to work correctly: the Next.js frontend and the Genkit AI flows.
+The application requires two separate processes to run in development: one for the Next.js frontend and one for the Genkit AI server.
 
-1.  **Start the Genkit development server:**
+1.  **Start the Genkit Development Server:**
     Open a terminal and run:
     ```bash
     npm run genkit:watch
     ```
-    This will start the Genkit flows and watch for any changes you make to the AI logic in `src/ai/flows/`.
+    This command starts the Genkit development server and will automatically restart it whenever you make changes to the AI flow files in `src/ai/`.
 
-2.  **Start the Next.js development server:**
-    Open a second terminal and run:
+2.  **Start the Next.js Development Server:**
+    Open a *second* terminal and run:
     ```bash
     npm run dev
     ```
-    This will start the main application on `http://localhost:9002`.
+    This command starts the main Next.js application.
 
-Now, you can open your browser and navigate to `http://localhost:9002` to start chatting with your AI companion!
+You can now open your browser and navigate to `http://localhost:9002` to see the login page and start chatting with your AI companion!
 
 ## 📦 Building for Production
 
-To create a production-ready build of the application, run the following command:
+To create an optimized production build of the application, run the following command:
 
 ```bash
 npm run build
 ```
 
-This will generate an optimized version of the application in the `.next` directory.
+This will compile and optimize the Next.js frontend and the Genkit backend into a `.next` directory, ready for deployment.
 
 ## 🚀 Deployment
 
-This application is optimized for deployment on **Firebase App Hosting**. You can deploy it with a single command using the Firebase CLI.
+This application is perfectly configured for deployment on **Firebase App Hosting**. You can deploy it with a single command using the Firebase CLI after setting up your Firebase project.
 
-For other platforms, you can start the production server using:
+For other platforms that support Node.js, you can start the production server using:
 ```bash
 npm run start
 ```
-
-Make sure to set up your environment variables (like `GEMINI_API_KEY`) in your production environment.
+Remember to set up your environment variables (like `GEMINI_API_KEY`) in your production hosting environment.
 
 ---
 
