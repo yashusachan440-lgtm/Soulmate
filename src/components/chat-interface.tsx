@@ -168,22 +168,17 @@ export function ChatInterface() {
       const reader = stream.getReader();
       const decoder = new TextDecoder();
       
-      let done = false;
-      let fullResponse = "";
-      while (!done) {
-        const { value, done: streamDone } = await reader.read();
-        done = streamDone;
-        if (value) {
-          fullResponse += decoder.decode(value, { stream: true });
-          setMessages((prev) =>
-            prev.map((msg) =>
-              msg.id === botMessageId
-                ? { ...msg, text: fullResponse }
-                : msg
-            )
-          );
-        }
-      }
+      const { value } = await reader.read();
+      const fullResponse = decoder.decode(value);
+
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === botMessageId
+            ? { ...msg, text: fullResponse }
+            : msg
+        )
+      );
+
       setShowHearts(true);
       setTimeout(() => setShowHearts(false), 4000);
 
@@ -342,9 +337,6 @@ export function ChatInterface() {
                       ) : (
                         <p className="font-body text-base leading-relaxed">
                           {message.text}
-                          {isLoading && message.id === messages[messages.length - 1].id && (
-                             <span className="inline-block w-2 h-4 bg-foreground ml-1 animate-pulse" />
-                          )}
                         </p>
                       )}
                     </div>

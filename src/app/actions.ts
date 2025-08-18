@@ -1,7 +1,7 @@
 
 "use server";
 
-import { flirtyHinglishChatStream } from "@/ai/flows/flirty-hinglish-chat";
+import { flirtyHinglishChat } from "@/ai/flows/flirty-hinglish-chat";
 import type { FlirtyHinglishChatInput, UserGender } from "@/ai/types/flirty-hinglish-chat";
 
 interface GetAiResponseParams {
@@ -16,8 +16,17 @@ export async function getAiResponse(params: GetAiResponseParams): Promise<Readab
       ...params,
       isMale: params.userGender === 'male',
     };
-    const stream = await flirtyHinglishChatStream(input);
-    return stream;
+    const { response } = await flirtyHinglishChat(input);
+    
+    // Wrap the single response in a stream to match client-side expectation
+    const textEncoder = new TextEncoder();
+    return new ReadableStream({
+      start(controller) {
+        controller.enqueue(textEncoder.encode(response));
+        controller.close();
+      },
+    });
+
   } catch (error) {
     console.error("Error calling AI flow:", error);
     // In case of an error, return a stream that sends a single error message.

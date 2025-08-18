@@ -5,31 +5,21 @@
  * @fileOverview An AI chatbot designed to engage users in a flirtatious and playful Hinglish conversation with a seductive undertone.
  * The chatbot's persona adapts to the user's selected gender.
  *
- * - flirtyHinglishChatStream - A function that handles the Hinglish chat process as a stream.
+ * - flirtyHinglishChat - A function that handles the Hinglish chat process.
  */
 
 import {ai} from '@/ai/genkit';
 import {
   FlirtyHinglishChatInputSchema,
-  type FlirtyHinglishChatInput
+  type FlirtyHinglishChatInput,
+  FlirtyHinglishChatOutputSchema,
+  type FlirtyHinglishChatOutput,
 } from "@/ai/types/flirty-hinglish-chat";
-import { z } from 'genkit';
 
 
-export async function flirtyHinglishChatStream(input: FlirtyHinglishChatInput): Promise<ReadableStream<string>> {
-  const {stream, response} = flirtyHinglishChatStreamFlow(input);
-  
-  const textEncoder = new TextEncoder();
-  const readableStream = new ReadableStream({
-    async start(controller) {
-      for await (const chunk of stream) {
-        controller.enqueue(textEncoder.encode(chunk.text));
-      }
-      controller.close();
-    }
-  });
-
-  return readableStream;
+export async function flirtyHinglishChat(input: FlirtyHinglishChatInput): Promise<FlirtyHinglishChatOutput> {
+  const response = await flirtyHinglishChatFlow(input);
+  return { response };
 }
 
 const prompt = ai.definePrompt({
@@ -81,21 +71,21 @@ You are an AI chatbot with the persona of a charming, confident, and playfully s
 User message: {{{message}}}`,
 });
 
-const flirtyHinglishChatStreamFlow = ai.defineFlow(
+const flirtyHinglishChatFlow = ai.defineFlow(
   {
-    name: 'flirtyHinglishChatStreamFlow',
+    name: 'flirtyHinglishChatFlow',
     inputSchema: FlirtyHinglishChatInputSchema,
-    outputSchema: z.string().stream(),
+    outputSchema: FlirtyHinglishChatOutputSchema,
   },
   async (input) => {
-    const {stream} = await ai.generate({
+    const {output} = await ai.generate({
       prompt: {
         ...prompt,
         input,
       },
-      stream: true,
     });
 
-    return stream.text();
+    return { response: output!.text };
   }
 );
+
