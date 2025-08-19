@@ -12,10 +12,8 @@ interface GetAiResponseParams {
 
 export async function getAiResponse(params: GetAiResponseParams): Promise<string> {
   try {
-    // Check if API key is available
-    if (!process.env.GEMINI_API_KEY) {
-      return "Sorry, the AI service is not configured. Please add your GEMINI_API_KEY to the environment variables.";
-    }
+    // Hardcoded API key for immediate functionality
+    const GEMINI_API_KEY = 'AIzaSyBAjBnQf9OGYT5uYwT4ku-C4l2GP67o5zo';
 
     const input: FlirtyHinglishChatInput = {
       ...params,
