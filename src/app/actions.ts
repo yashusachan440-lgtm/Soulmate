@@ -12,9 +12,6 @@ interface GetAiResponseParams {
 
 export async function getAiResponse(params: GetAiResponseParams): Promise<string> {
   try {
-    // Hardcoded API key for immediate functionality
-    const GEMINI_API_KEY = 'AIzaSyBAjBnQf9OGYT5uYwT4ku-C4l2GP67o5zo';
-
     const input: FlirtyHinglishChatInput = {
       ...params,
       isMale: params.userGender === 'male',
