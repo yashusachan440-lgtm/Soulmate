@@ -162,22 +162,16 @@ export function ChatInterface() {
     setMessages((prev) => [...prev, botMessagePlaceholder]);
     
     try {
-      const stream = await getAiResponse({ 
+      const response = await getAiResponse({ 
         message: userInput, 
         userGender,
         chatbotName: chatbotPersona.name,
       });
 
-      const reader = stream.getReader();
-      const decoder = new TextDecoder();
-      
-      const { value } = await reader.read();
-      const fullResponse = decoder.decode(value);
-
       setMessages((prev) =>
         prev.map((msg) =>
           msg.id === botMessageId
-            ? { ...msg, text: fullResponse }
+            ? { ...msg, text: response }
             : msg
         )
       );

@@ -10,31 +10,23 @@ interface GetAiResponseParams {
   chatbotName: string;
 }
 
-export async function getAiResponse(params: GetAiResponseParams): Promise<ReadableStream<string>> {
+export async function getAiResponse(params: GetAiResponseParams): Promise<string> {
   try {
+    // Check if API key is available
+    if (!process.env.GEMINI_API_KEY) {
+      return "Sorry, the AI service is not configured. Please add your GEMINI_API_KEY to the environment variables.";
+    }
+
     const input: FlirtyHinglishChatInput = {
       ...params,
       isMale: params.userGender === 'male',
     };
-    const { response } = await flirtyHinglishChat(input);
     
-    // Wrap the single response in a stream to match client-side expectation
-    const textEncoder = new TextEncoder();
-    return new ReadableStream({
-      start(controller) {
-        controller.enqueue(textEncoder.encode(response));
-        controller.close();
-      },
-    });
+    const { response } = await flirtyHinglishChat(input);
+    return response;
 
   } catch (error) {
     console.error("Error calling AI flow:", error);
-    // In case of an error, return a stream that sends a single error message.
-    return new ReadableStream({
-      start(controller) {
-        controller.enqueue("Oops! Thoda sa technical glitch ho gaya, my love. Try again? 😉");
-        controller.close();
-      },
-    });
+    return "Oops! Thoda sa technical glitch ho gaya, my love. Try again? 😉";
   }
 }

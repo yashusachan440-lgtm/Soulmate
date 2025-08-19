@@ -37,86 +37,44 @@ The application follows a clean, decoupled architecture:
 
 -   **AI Flows (`src/ai/flows`)**: This is the heart of our AI. We use Firebase Genkit to define our generative AI logic. The `flirty-hinglish-chat.ts` file defines the prompts and logic for how the AI should respond based on the user's gender and message. Genkit orchestrates the calls to the powerful Google Gemini model.
 
-## 🛠️ Getting Started
+## 🛠️ Quick Start
 
-Follow these steps to get the Vanika application running on your local machine.
+### 1. Get Your API Key
+Get your Google AI API key from [Google AI Studio](https://aistudio.google.com/app/apikey)
 
-### Prerequisites
+### 2. Environment Setup
+1. Copy `.env.example` to `.env`
+2. Add your API key to the `.env` file:
+   ```
+   GEMINI_API_KEY=your_actual_api_key_here
+   ```
 
-- [Node.js](https://nodejs.org/) (version 20 or later recommended)
-- [npm](https://www.npmjs.com/) (usually comes with Node.js)
-- A [Google AI API Key](https://ai.google.dev/) for using the Gemini model.
-
-### Installation & Setup
-
-1.  **Clone the repository:**
-    ```bash
-    git clone <repository-url>
-    cd <repository-directory>
-    ```
-
-2.  **Install dependencies:**
-    ```bash
-    npm install
-    ```
-
-3.  **Set up environment variables:**
-    Create a `.env` file in the root of the project. You can do this by copying the example if one exists, or creating a new one:
-    ```bash
-    touch .env
-    ```
-    Open the `.env` file and add your Google AI API Key:
-    ```
-    GEMINI_API_KEY=your_google_ai_api_key_here
-    ```
-
-### Running the Development Server
-
-The application requires two separate processes to run in development: one for the Next.js frontend and one for the Genkit AI server.
-
-1.  **Start the Genkit Development Server:**
-    Open a terminal and run:
-    ```bash
-    npm run genkit:watch
-    ```
-    This command starts the Genkit development server and will automatically restart it whenever you make changes to the AI flow files in `src/ai/`.
-
-2.  **Start the Next.js Development Server:**
-    Open a *second* terminal and run:
-    ```bash
-    npm run dev
-    ```
-    This command starts the main Next.js application.
-
-You can now open your browser and navigate to `http://localhost:9002` to see the login page and start chatting with your AI companion!
-
-## 📦 Building for Production
-
-To create an optimized production build of the application, run the following command:
-
+### 3. Install and Run
 ```bash
-npm run build
+npm install
+npm run dev
 ```
 
-This will compile and optimize the Next.js frontend and the Genkit backend into a `.next` directory, ready for deployment. The standard `next start` command can be used to run the production server.
+The app will be available at `http://localhost:9002`
 
 ## 🚀 Deployment
 
-This application is ready for deployment on any modern hosting platform that supports Node.js, such as **Netlify** or **Vercel**.
+### Netlify
+1. Connect your repository to Netlify
+2. Set environment variable: `GEMINI_API_KEY` = your API key
+3. Deploy!
 
-### Netlify Deployment Steps
+### Vercel
+1. Connect your repository to Vercel
+2. Add environment variable: `GEMINI_API_KEY` = your API key
+3. Deploy!
 
-1.  **Connect Your Repository**: Connect your Git repository (e.g., from GitHub) to your Netlify account.
-2.  **Configure Build Settings**: Netlify will automatically detect that this is a Next.js project. It should set the build command and publish directory correctly. If you need to set them manually, use:
-    *   **Build command**: `npm run build`
-    *   **Publish directory**: `.next`
-3.  **Set Environment Variables**: This is the most important step for the AI to work.
-    *   In your Netlify dashboard, go to your site's settings.
-    *   Navigate to **Site configuration > Environment variables**.
-    *   Click **Add a variable** and create a new variable:
-        *   **Key**: `GEMINI_API_KEY`
-        *   **Value**: Paste your Google AI API key here.
-4.  **Deploy**: Trigger a new deployment from the Netlify UI.
+### Other Platforms
+The app is a standard Next.js application and can be deployed anywhere that supports Node.js.
+
+## 🔧 Environment Variables
+
+- `GEMINI_API_KEY`: Your Google AI API key (required)
 
 ---
 

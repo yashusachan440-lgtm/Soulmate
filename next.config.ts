@@ -1,12 +1,15 @@
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  output: 'standalone',
   typescript: {
     ignoreBuildErrors: true,
   },
   eslint: {
     ignoreDuringBuilds: true,
+  },
+  experimental: {
+    serverComponentsExternalPackages: ['genkit'],
   },
   images: {
     remotePatterns: [
@@ -17,6 +20,9 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
+  },
+  env: {
+    GEMINI_API_KEY: process.env.GEMINI_API_KEY,
   },
 };
 

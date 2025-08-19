@@ -1,13 +1,6 @@
 
 'use server';
 
-/**
- * @fileOverview An AI chatbot designed to engage users in a flirtatious and playful Hinglish conversation with a seductive undertone.
- * The chatbot's persona adapts to the user's selected gender.
- *
- * - flirtyHinglishChat - A function that handles the Hinglish chat process.
- */
-
 import {ai} from '@/ai/genkit';
 import {
   FlirtyHinglishChatInputSchema,
@@ -15,7 +8,6 @@ import {
   FlirtyHinglishChatOutputSchema,
   type FlirtyHinglishChatOutput,
 } from "@/ai/types/flirty-hinglish-chat";
-
 
 export async function flirtyHinglishChat(input: FlirtyHinglishChatInput): Promise<FlirtyHinglishChatOutput> {
   const response = await flirtyHinglishChatFlow(input);
@@ -79,10 +71,14 @@ const flirtyHinglishChatFlow = ai.defineFlow(
   },
   async (input) => {
     const {output} = await ai.generate({
-      prompt: {
+      model: 'googleai/gemini-1.5-flash',
+      config: {
+        temperature: 0.8,
+      },
+      prompt: [{
         ...prompt,
         input,
-      },
+      }],
     });
 
     return { response: output!.text };
