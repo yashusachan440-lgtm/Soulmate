@@ -72,10 +72,8 @@ const flirtyHinglishChatFlow = ai.defineFlow(
   async (input) => {
     const {output} = await ai.generate({
       model: 'googleai/gemini-1.5-flash',
-      prompt: [{
-        ...prompt,
-        input,
-      }],
+      prompt,
+      input,
     });
 
     return { response: output!.text };
