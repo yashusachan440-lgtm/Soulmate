@@ -1,11 +1,9 @@
 [build]
   command = "npm run build"
-  publish = ".next/standalone"
+  publish = ".next"
 
 [build.environment]
   NODE_VERSION = "20"
 
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+[images]
+  remote_images = ["https://placehold.co/"]
