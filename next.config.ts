@@ -8,8 +8,11 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  serverExternalPackages: ['genkit'],
   experimental: {
-    serverComponentsExternalPackages: ['genkit'],
+    allowedDevOrigins: [
+      'https://6000-firebase-studio-1755469602152.cluster-fdkw7vjj7bgguspe3fbbc25tra.cloudworkstations.dev',
+    ],
   },
   images: {
     remotePatterns: [
