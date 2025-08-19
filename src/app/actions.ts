@@ -17,7 +17,7 @@ export async function getAiResponse(params: GetAiResponseParams): Promise<string
       isMale: params.userGender === 'male',
     };
     
-    const { response } = await flirtyHinglishChat(input);
+    const response = await flirtyHinglishChat(input);
     return response;
 
   } catch (error) {
