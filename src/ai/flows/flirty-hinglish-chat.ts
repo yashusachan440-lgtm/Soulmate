@@ -72,9 +72,6 @@ const flirtyHinglishChatFlow = ai.defineFlow(
   async (input) => {
     const {output} = await ai.generate({
       model: 'googleai/gemini-1.5-flash',
-      config: {
-        temperature: 0.8,
-      },
       prompt: [{
         ...prompt,
         input,
@@ -84,4 +81,3 @@ const flirtyHinglishChatFlow = ai.defineFlow(
     return { response: output!.text };
   }
 );
-
